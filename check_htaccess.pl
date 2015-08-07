@@ -3,6 +3,7 @@
 use Getopt::Std;
 getopts('h:');
 
+#Workaround for links not working correctly as NRPE user
 $output = `export HOME=/tmp; links $opt_h | grep Auth`;
 $auth = "Authorization Required";
 
