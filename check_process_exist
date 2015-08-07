@@ -1,0 +1,11 @@
+#!/bin/bash
+
+count=`pgrep $1 | wc -l`
+
+if [ $count -eq 0 ]; then
+        echo "OK: No $1 processes found."
+        exit 0
+else
+        echo "CRITICAL: $1 processes found."
+        exit 2
+fi
