@@ -1,0 +1,32 @@
+#!/bin/bash
+#
+# Calculates total memory usage of MySQL for Nagios/Icinga checks, with perfdata
+#
+# Usage: check_mysql_memory <warning threshold (KB)> <critical threshold (KB)>
+# Example: check_mysql_memory 1000000 2000000
+#
+
+mem_usage=`ps --no-headers -o rss -p $(pidof mysqld)`
+mem_usage_readable=`echo ${mem_usage} | awk '{print $1/1024"MB"}'`
+param_one_readable=`echo ${1} | awk '{print $1/1024"MB"}'`
+param_two_readable=`echo ${2} | awk '{print $1/1024"MB"}'`
+
+
+if [ $mem_usage -lt $1 ]
+        then
+                echo "OK: MySQL memory usage is $mem_usage_readable | Usage=$mem_usage_readable"
+                exit 0
+fi
+
+if [ $mem_usage -ge $2 ]
+        then
+                echo "CRITICAL: MySQL memory usage ($mem_usage_readable) greater than critical threshold $param_two_readable | Usage=$mem_usage_readable"
+                exit 2
+elif [ $mem_usage -ge $1 ]
+        then
+                echo "WARNING: MySQL memory usage ($mem_usage_readable) greater than warning threshold $param_one_readable | Usage=$mem_usage_readable"
+                exit 1
+else
+                echo "UNKNOWN: MySQL memory usage unknown"
+                exit 3
+fi
